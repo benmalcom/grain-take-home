@@ -6,7 +6,7 @@ import {
   getWinnerFromBoardState,
   getAICellIndex,
 } from './gameUtils';
-import { BoardStateType, GameState, PlayersType, WinningsType } from './types';
+import { BoardStateType, GameState, PlayersType, WinningsType } from '../types';
 
 /**
  * React hook to manage all the state changes in the game

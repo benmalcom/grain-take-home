@@ -1,4 +1,4 @@
-const initArray = size => Array.from(new Array(size * size).keys());
+const initArray = (size: number) => Array.from(new Array(size * size).keys());
 
 const getRowsFromArray = (n = 3) => {
   const arr = initArray(n);
@@ -13,10 +13,10 @@ const getRowsFromArray = (n = 3) => {
   return result;
 };
 
-const getColumnsFromRowsArray = arr =>
+const getColumnsFromRowsArray = (arr: number[][]) =>
   arr[0].map((col, i) => arr.map(row => row[i]));
 
-const getArrayDiagonals = arr => {
+const getArrayDiagonals = (arr: number[][]) => {
   const n = arr.length;
   const primaryDiagonal = [];
   const secondaryDiagonal = [];
@@ -34,7 +34,7 @@ const getArrayDiagonals = arr => {
   return [primaryDiagonal, secondaryDiagonal];
 };
 
-export const getWinningCombinations = size => {
+export const getWinningCombinations = (size: number) => {
   const result = [];
   const winningRows = getRowsFromArray(size);
   const winningColumns = getColumnsFromRowsArray(winningRows);

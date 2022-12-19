@@ -1,4 +1,4 @@
-import { PlayerIdsType, PlayersType, WinnerType } from './types';
+import { PlayerIdsType, PlayersType, WinnerType } from '../types';
 
 export const WINNING_COMBINATIONS = [
   [0, 1, 2],

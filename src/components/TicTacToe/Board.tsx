@@ -1,8 +1,9 @@
-import cx from 'classnames';
-import './Board.scss';
+import styled from '@emotion/styled/macro';
 import React, { useEffect, useState } from 'react';
-import { Button, InfoText } from 'components/ui';
+import { Button, Text } from 'components/ui';
+import Cell from './Cell';
 import { WinnerType } from './types';
+import Banner from '../ui/Banner';
 
 type BoardProps = {
   cells: string[];
@@ -12,7 +13,37 @@ type BoardProps = {
   onSeeRecord(): void;
   showActionButtons: boolean;
   gameStatusText: string;
+  boardSize: number;
 };
+
+const BoardWrapper = styled.div`
+  position: relative;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px 10px;
+`;
+const BoardInner = styled.div<{ boardSize: number }>`
+  display: grid;
+  grid-template-columns: repeat(${({ boardSize }) => boardSize}, 80px);
+  margin: 30px auto;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+`;
+
+const PlayerStatus = styled(Text)`
+  margin-top: 50px;
+  font-weight: 300;
+  text-transform: uppercase;
+`;
 
 const Board: React.FC<BoardProps> = ({
   cells,
@@ -22,6 +53,7 @@ const Board: React.FC<BoardProps> = ({
   gameStatusText,
   onSeeRecord,
   showActionButtons,
+  boardSize,
 }) => {
   const [showBanner, setShowBanner] = useState(true);
 
@@ -30,16 +62,10 @@ const Board: React.FC<BoardProps> = ({
   }, []);
 
   return (
-    <div className="Board">
-      <div
-        className={cx('banner', {
-          'slide-up': !showBanner,
-        })}
-      >
-        Now in game
-      </div>
-      <InfoText className="player-status">{gameStatusText}</InfoText>
-      <div className="board-inner">
+    <BoardWrapper>
+      <Banner isSlidUp={!showBanner}>Now in game</Banner>
+      <PlayerStatus>{gameStatusText}</PlayerStatus>
+      <BoardInner boardSize={boardSize}>
         {cells.map((value, index) => (
           <Cell
             key={index}
@@ -47,40 +73,20 @@ const Board: React.FC<BoardProps> = ({
             cellIndex={index}
             onClick={onCellClick}
             winner={winner}
+            size={boardSize}
           />
         ))}
-      </div>
-      <div className="actions">
+      </BoardInner>
+      <Actions>
         {showActionButtons && (
           <>
             <Button onClick={onPlayAgain}>Play Again</Button>
             <Button onClick={onSeeRecord}>See Record</Button>
           </>
         )}
-      </div>
-    </div>
+      </Actions>
+    </BoardWrapper>
   );
 };
 
 export default Board;
-
-type CellProps = {
-  onClick(cellIndex: number): void;
-  winner?: WinnerType;
-  value: string;
-  cellIndex: number;
-};
-
-const Cell: React.FC<CellProps> = ({ value, onClick, cellIndex, winner }) => {
-  return (
-    <div
-      className={cx('Cell', {
-        winner: !!winner && winner.combination.includes(cellIndex),
-        invalid: !!winner && !winner.combination.includes(cellIndex),
-      })}
-      onClick={() => onClick(cellIndex)}
-    >
-      {value}
-    </div>
-  );
-};

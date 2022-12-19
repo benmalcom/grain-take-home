@@ -1,2 +1,2 @@
-export { default as Button } from './Button/Button';
-export { default as InfoText } from './InfoText/InfoText';
+export { default as Button } from './Button';
+export { default as Text } from './Text';

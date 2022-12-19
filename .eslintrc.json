@@ -17,21 +17,6 @@
     "prettier",
     "import"
   ],
-  "overrides": [
-    {
-      "files": ["components/common/**/*.ts"],
-      "rules": {
-        "react/jsx-props-no-spreading": "off"
-      }
-    },
-    {
-      "files": ["*.stories.ts", "*.test.ts"],
-      "rules": {
-        "react/jsx-props-no-spreading": "off",
-        "react/prop-types": "off"
-      }
-    }
-  ],
   "rules": {
     "import/order": [
       1,
@@ -51,14 +36,6 @@
           },
           {
             "pattern": "hooks",
-            "group": "internal"
-          },
-          {
-            "pattern": "entities",
-            "group": "internal"
-          },
-          {
-            "pattern": "utils",
             "group": "internal"
           }
         ],

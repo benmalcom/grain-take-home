@@ -1,15 +1,36 @@
-import './index.scss';
+import styled from '@emotion/styled/macro';
 import React from 'react';
 import Record from 'components/TicTacToe/Record';
 import Board from './Board';
-import { useGameState } from './gameState';
-import { gameModes } from './gameUtils';
-import PlayerSelection from './PlayerSelection';
+import HomeScreen from './HomeScreen';
+import { useGameState } from './utils/gameState';
+import { gameModes } from './utils/gameUtils';
 
 const INITIAL_BOARD_STATE = {
   cells: Array(9).fill(''),
   gameMode: gameModes.NOT_STARTED,
 };
+
+const TicTacToeWrapper = styled.div`
+  text-align: center;
+  margin: 100px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 320px;
+  max-width: 324px;
+  height: 530px;
+  max-height: 600px;
+  background: linear-gradient(
+    180deg,
+    #627a96 0%,
+    #83b5c5 19.47%,
+    #8dc7d4 39.07%,
+    #93d2dc 82.24%,
+    #95d6df 100%
+  );
+`;
 
 const TicTacToe: React.FC = () => {
   const {
@@ -49,6 +70,7 @@ const TicTacToe: React.FC = () => {
     ) {
       return (
         <Board
+          boardSize={3}
           onSeeRecord={seeRecord}
           gameStatusText={getGamePlayStatusText()}
           cells={boardState.cells}
@@ -71,7 +93,7 @@ const TicTacToe: React.FC = () => {
       );
     }
     return (
-      <PlayerSelection
+      <HomeScreen
         matchSecondPlayer={matchSecondPlayer}
         selectPlayer={setFirstPlayer}
         players={players}
@@ -80,7 +102,7 @@ const TicTacToe: React.FC = () => {
     );
   };
 
-  return <div className="TicTacToeWrapper">{getCurrentScreen()}</div>;
+  return <TicTacToeWrapper>{getCurrentScreen()}</TicTacToeWrapper>;
 };
 
 export default TicTacToe;

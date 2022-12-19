@@ -1,7 +1,36 @@
-import './Record.scss';
+import styled from '@emotion/styled/macro';
 import React from 'react';
-import { Button, InfoText } from 'components/ui';
+import { Button, Text } from 'components/ui';
 import { PlayersType, WinningsType } from './types';
+
+const RecordWrapper = styled.div`
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px 10px;
+`;
+
+const InfoText = styled(Text)`
+  &:first-of-type {
+    margin-top: 30px;
+    font-weight: 300;
+  }
+  &:last-of-type {
+    width: 209px;
+    font-weight: 300;
+    text-transform: initial;
+  }
+`;
+
+const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+`;
 
 type RecordProps = {
   onPlayAgain(): void;
@@ -23,16 +52,16 @@ const Record: React.FC<RecordProps> = ({
   const playerWinCount = winnings[players.first!] || 0;
 
   return (
-    <div className="Record">
-      <InfoText className="player-status">{gameStatusText}</InfoText>
-      <InfoText className="player-statistics">
+    <RecordWrapper>
+      <InfoText>{gameStatusText}</InfoText>
+      <InfoText>
         You have won {playerWinCount} times and lost{' '}
         {totalWinsAndLosses - playerWinCount} times
       </InfoText>
-      <div className="actions">
+      <Actions>
         <Button onClick={onPlayAgain}>Play Again</Button>
-      </div>
-    </div>
+      </Actions>
+    </RecordWrapper>
   );
 };
 

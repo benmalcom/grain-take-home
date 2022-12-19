@@ -1,16 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { playerIds } from 'components/TicTacToe/gameUtils';
-import PlayerSelection from './PlayerSelection';
+import { playerIds } from 'components/TicTacToe/utils/gameUtils';
+import HomeScreen from './HomeScreen';
 
 const PLAYERS = { first: 'me', second: 'you' };
 
-describe('<PlayerSelection />', function () {
+describe('<HomeScreen />', function () {
   test('Renders with instructions', () => {
     const selectPlayerMock = jest.fn();
     const matchSecondPlayerMock = jest.fn();
     render(
-      <PlayerSelection
+      <HomeScreen
         players={PLAYERS}
         selectPlayer={selectPlayerMock}
         matchSecondPlayer={matchSecondPlayerMock}
@@ -29,7 +29,7 @@ describe('<PlayerSelection />', function () {
     const selectPlayerMock = jest.fn();
     const matchSecondPlayerMock = jest.fn();
     render(
-      <PlayerSelection
+      <HomeScreen
         players={PLAYERS}
         selectPlayer={selectPlayerMock}
         matchSecondPlayer={matchSecondPlayerMock}
