@@ -32,7 +32,6 @@ export type GameState = {
   matchSecondPlayer(): void;
   isWaitingForOpponent: boolean;
   onPlayAgain(): void;
-  lastWinner: string | null;
   seeRecord(): void;
   onResetGame(): void;
 };

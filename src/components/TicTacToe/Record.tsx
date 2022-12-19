@@ -1,7 +1,7 @@
 import styled from '@emotion/styled/macro';
 import React from 'react';
 import { Button, Text } from 'components/ui';
-import { PlayersType, WinningsType } from './types';
+import { PlayersType, WinningsType } from './utils/types';
 
 const RecordWrapper = styled.div`
   text-align: center;
@@ -36,15 +36,9 @@ type RecordProps = {
   onPlayAgain(): void;
   players: PlayersType;
   winnings: WinningsType;
-  gameStatusText: string | JSX.Element;
 };
 
-const Record: React.FC<RecordProps> = ({
-  onPlayAgain,
-  winnings,
-  gameStatusText,
-  players,
-}) => {
+const Record: React.FC<RecordProps> = ({ onPlayAgain, winnings, players }) => {
   const totalWinsAndLosses = Object.entries(winnings)
     .filter(([key]) => key !== 'tie')
     .reduce((acc, [, value]) => acc + value, 0);
@@ -53,10 +47,9 @@ const Record: React.FC<RecordProps> = ({
 
   return (
     <RecordWrapper>
-      <InfoText>{gameStatusText}</InfoText>
       <InfoText>
-        You have won {playerWinCount} times and lost{' '}
-        {totalWinsAndLosses - playerWinCount} times
+        You have won {playerWinCount} time(s) and lost{' '}
+        {totalWinsAndLosses - playerWinCount} time(s)
       </InfoText>
       <Actions>
         <Button onClick={onPlayAgain}>Play Again</Button>

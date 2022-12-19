@@ -2,7 +2,7 @@ import styled from '@emotion/styled/macro';
 import React, { ChangeEvent } from 'react';
 import { boardSizes, playerIds } from 'components/TicTacToe/utils/gameUtils';
 import { Button, Text } from 'components/ui';
-import { PlayersType } from './types';
+import { PlayersType } from './utils/types';
 
 type PlayerSelectionProps = {
   selectPlayer(playerId: string): void;

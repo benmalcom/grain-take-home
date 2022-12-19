@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import React from 'react';
-import { WinnerType } from './types';
+import { WinnerType } from './utils/types';
 
 type CellProps = {
   onClick(cellIndex: number): void;

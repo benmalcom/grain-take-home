@@ -2,7 +2,7 @@ import styled from '@emotion/styled/macro';
 import React, { useEffect, useState } from 'react';
 import { Button, Text } from 'components/ui';
 import Cell from './Cell';
-import { WinnerType } from './types';
+import { WinnerType } from './utils/types';
 import Banner from '../ui/Banner';
 
 type BoardProps = {

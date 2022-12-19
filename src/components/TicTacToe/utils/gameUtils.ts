@@ -1,5 +1,5 @@
+import { PlayerIdsType, PlayersType, WinnerType } from './types';
 import { getWinningCombinations } from './winningCombinations';
-import { PlayerIdsType, PlayersType, WinnerType } from '../types';
 
 /*export const WINNING_COMBINATIONS = [
   [0, 1, 2],

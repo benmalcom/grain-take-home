@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import usePrevious from 'hooks/usePrevious';
+import { getGameData, saveGameData } from './dataStorage';
 import {
   gameModes,
   playerIds,
   getWinnerFromBoardState,
   getAICellIndex,
 } from './gameUtils';
-import { BoardStateType, GameState, PlayersType, WinningsType } from '../types';
+import { BoardStateType, GameState, PlayersType, WinningsType } from './types';
 
 type UseGameStateProps = {
   initialBoardState: BoardStateType;
@@ -25,38 +26,84 @@ export const useGameState = ({
 }: UseGameStateProps): GameState => {
   const [boardState, setBoardState] =
     useState<BoardStateType>(initialBoardState);
-  const [winnings, setWinnings] = useState<WinningsType>({});
-  const [players, setPlayers] = useState<PlayersType>({
-    first: '',
-    second: '',
-  });
+  const [winnings, setWinnings] = useState<WinningsType>(
+    () => getGameData()?.winnings || {}
+  );
+  const [players, setPlayers] = useState<PlayersType>(
+    () =>
+      getGameData()?.players || {
+        first: '',
+        second: '',
+      }
+  );
+
   const [isWaitingForOpponent, setIsWaitingForOpponent] =
     useState<boolean>(false);
-  const [lastWinner, setLastWinner] = useState<string | null>(null);
 
   const initBoard = (boardSize: number) => {
+    const cells = Array(boardSize * boardSize).fill('');
     setBoardState(currentBoardState => ({
       ...currentBoardState,
-      cells: Array(boardSize * boardSize).fill(''),
+      cells,
     }));
   };
 
+  /*
+   *  Save changes to game data state to localStorage
+   * */
+
   useEffect(() => {
-    initBoard(boardSize);
+    // Save players to localStorage
+    saveGameData({ winner: boardState.winner });
+  }, [boardState.winner]);
+
+  useEffect(() => {
+    // Save players to localStorage
+    saveGameData({ players });
+  }, [players]);
+
+  useEffect(() => {
+    // Save winnings to localStorage
+    saveGameData({ winnings });
+  }, [winnings]);
+
+  useEffect(() => {
+    // Save gameMode to localStorage
+    saveGameData({ gameMode: boardState.gameMode });
+  }, [boardState.gameMode]);
+
+  useEffect(() => {
+    // Save cells to localStorage
+    saveGameData({ cells: boardState.cells });
+  }, [boardState.cells]);
+
+  useEffect(() => {
+    // Save currentPlayer to localStorage
+    saveGameData({ currentPlayer: boardState.currentPlayer });
+  }, [boardState.currentPlayer]);
+
+  /*
+   *  End persistence to to localStorage
+   * */
+
+  const previousBoardSize = usePrevious(boardSize);
+
+  useEffect(() => {
+    if (
+      (!previousBoardSize && boardState) ||
+      (previousBoardSize && boardState && previousBoardSize !== boardSize)
+    ) {
+      if (boardState.gameMode === gameModes.NOT_STARTED) {
+        initBoard(boardSize);
+        // Save boardSize to localStorage
+        saveGameData({ boardSize });
+      }
+    }
   }, [boardSize]);
 
-  /**
-   * @callbackThis function selects a player id for the first Player
-   *
-   * @param {String} playerId - This it the selected player id or name
-   */
   const setFirstPlayer = (playerId: string) =>
     setPlayers(currentPlayers => ({ ...currentPlayers, first: playerId }));
 
-  /**
-   * Check players selection states, if first player has been selected, wait for second player,
-   * if second player has been selected, switch screen to game in progress
-   */
   const previousPlayers = usePrevious(players) as unknown as PlayersType;
   useEffect(() => {
     if (
@@ -69,19 +116,15 @@ export const useGameState = ({
     } else if (!previousPlayers?.second && players.second) {
       setBoardState(state => ({ ...state, gameMode: gameModes.IN_PROGRESS }));
     }
+    // Save to localStorage
+    saveGameData({ players });
   }, [players, previousPlayers]);
 
-  /**
-   * Match second player after first player has been picked
-   */
   const matchSecondPlayer = () => {
     if (!players.first) return;
     setIsWaitingForOpponent(true);
   };
 
-  /**
-   * Set second player since first player has been chosen, also add timeout to simulate waiting period
-   */
   const previousIsWaiting = usePrevious(isWaitingForOpponent);
   useEffect(() => {
     if (!previousIsWaiting && isWaitingForOpponent) {
@@ -99,12 +142,6 @@ export const useGameState = ({
     }
   }, [isWaitingForOpponent, previousIsWaiting]);
 
-  /**
-   * @callback function when a cell is clicked, it updates the cell with the id of the current player
-   * who clicked it and also checks if there's a current winner after this action, or if there's a tie.
-   *
-   * @param {Number} cellIndex - The index of the cell
-   */
   const onCellClick = useCallback(
     (cellIndex: number) => {
       if (boardState.winner) return;
@@ -140,10 +177,6 @@ export const useGameState = ({
     [boardState.cells, boardState.winner]
   );
 
-  /**
-   * Look out for when the current player is switched to the computer AI,
-   * get the AI cell index and trigger a cell click
-   */
   const previousPlayer = usePrevious(boardState.currentPlayer);
   useEffect(() => {
     if (
@@ -163,13 +196,7 @@ export const useGameState = ({
     previousPlayer,
   ]);
 
-  /**
-   * Reset the board state for another game and keep track of last winner
-   */
   const onPlayAgain = () => {
-    if (boardState.winner?.player) {
-      setLastWinner(boardState.winner?.player);
-    }
     setBoardState({
       ...initialBoardState,
       cells: Array(boardSize * boardSize).fill(''),
@@ -178,15 +205,9 @@ export const useGameState = ({
     });
   };
 
-  /**
-   * Switch view to record screen
-   */
   const seeRecord = () =>
     setBoardState(state => ({ ...state, gameMode: gameModes.RECORD_VIEW }));
 
-  /**
-   * Reset the game state
-   */
   const onResetGame = () => {
     setIsWaitingForOpponent(false);
     setPlayers({
@@ -194,13 +215,10 @@ export const useGameState = ({
       second: '',
     });
     setWinnings({});
-    setBoardState(initialBoardState);
+    setBoardState({ ...initialBoardState, gameMode: gameModes.NOT_STARTED });
     initBoard(boardSize);
   };
 
-  /**
-   * Update winnings anytime a game is finished
-   */
   const previousGameMode = usePrevious(boardState.gameMode);
   useEffect(() => {
     if (
@@ -235,7 +253,6 @@ export const useGameState = ({
     matchSecondPlayer,
     isWaitingForOpponent,
     onPlayAgain,
-    lastWinner,
     seeRecord,
     onResetGame,
   };

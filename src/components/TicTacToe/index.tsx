@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Record from 'components/TicTacToe/Record';
 import Board from './Board';
 import HomeScreen from './HomeScreen';
+import { getGameData } from './utils/dataStorage';
 import { useGameState } from './utils/gameState';
 import { gameModes } from './utils/gameUtils';
 
@@ -30,7 +31,9 @@ const TicTacToeWrapper = styled.div`
 `;
 
 const TicTacToe: React.FC = () => {
-  const [boardSize, setBoardSize] = useState<number>(3);
+  const [boardSize, setBoardSize] = useState<number>(
+    getGameData()?.boardSize || 3
+  );
   const {
     onCellClick,
     setFirstPlayer,
@@ -40,11 +43,14 @@ const TicTacToe: React.FC = () => {
     matchSecondPlayer,
     onPlayAgain,
     winnings,
-    lastWinner,
     seeRecord,
     onResetGame,
   } = useGameState({
-    initialBoardState: { ...INITIAL_BOARD_STATE, cells: [] },
+    initialBoardState: {
+      cells: getGameData()?.cells || [],
+      gameMode: getGameData()?.gameMode || INITIAL_BOARD_STATE.gameMode,
+      currentPlayer: getGameData()?.currentPlayer,
+    },
     boardSize,
   });
 
@@ -57,14 +63,13 @@ const TicTacToe: React.FC = () => {
     );
 
     if (gameMode === gameModes.FINISHED || gameMode === gameModes.RECORD_VIEW) {
-      if (winner) {
-        status =
-          lastWinner && lastWinner === winner.player
-            ? `${winner.player} wins again!`
-            : `${winner.player} wins!`;
-      } else {
-        status = `It's a tie!`;
-      }
+      status = winner ? (
+        <>
+          <strong>{winner.player}</strong> wins!
+        </>
+      ) : (
+        `It's a tie!`
+      );
     }
     return status;
   };
@@ -85,7 +90,10 @@ const TicTacToe: React.FC = () => {
           onCellClick={onCellClick}
           winner={boardState.winner}
           onPlayAgain={onPlayAgain}
-          onResetGame={onResetGame}
+          onResetGame={() => {
+            onResetGame();
+            setBoardSize(3);
+          }}
           showActionButtons={boardState.gameMode === gameModes.FINISHED}
         />
       );
@@ -94,7 +102,6 @@ const TicTacToe: React.FC = () => {
     if (boardState.gameMode === gameModes.RECORD_VIEW) {
       return (
         <Record
-          gameStatusText={getGamePlayStatus()}
           winnings={winnings}
           players={players}
           onPlayAgain={onPlayAgain}
