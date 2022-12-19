@@ -42,6 +42,7 @@ const TicTacToe: React.FC = () => {
     winnings,
     lastWinner,
     seeRecord,
+    onResetGame,
   } = useGameState({
     initialBoardState: { ...INITIAL_BOARD_STATE, cells: [] },
     boardSize,
@@ -84,6 +85,7 @@ const TicTacToe: React.FC = () => {
           onCellClick={onCellClick}
           winner={boardState.winner}
           onPlayAgain={onPlayAgain}
+          onResetGame={onResetGame}
           showActionButtons={boardState.gameMode === gameModes.FINISHED}
         />
       );

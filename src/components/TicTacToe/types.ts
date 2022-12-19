@@ -34,4 +34,5 @@ export type GameState = {
   onPlayAgain(): void;
   lastWinner: string | null;
   seeRecord(): void;
+  onResetGame(): void;
 };

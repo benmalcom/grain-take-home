@@ -11,6 +11,7 @@ type BoardProps = {
   winner?: WinnerType;
   onPlayAgain(): void;
   onSeeRecord(): void;
+  onResetGame(): void;
   showActionButtons: boolean;
   gameStatusText: string | JSX.Element;
   boardSize: number;
@@ -40,10 +41,10 @@ const Actions = styled.div`
   row-gap: 15px;
 `;
 
-const PlayerStatus = styled(Text)`
+const GameStatusText = styled(Text)`
   margin-top: 50px;
   font-weight: 300;
-  text-transform: uppercase;
+  text-transform: capitalize;
 `;
 
 const Board: React.FC<BoardProps> = ({
@@ -55,6 +56,7 @@ const Board: React.FC<BoardProps> = ({
   onSeeRecord,
   showActionButtons,
   boardSize,
+  onResetGame,
 }) => {
   const [showBanner, setShowBanner] = useState(true);
 
@@ -65,7 +67,7 @@ const Board: React.FC<BoardProps> = ({
   return (
     <BoardWrapper>
       <Banner isSlidUp={!showBanner}>Now in game</Banner>
-      <PlayerStatus>{gameStatusText}</PlayerStatus>
+      <GameStatusText>{gameStatusText}</GameStatusText>
       <BoardInner boardSize={boardSize}>
         {cells.map((value, index) => (
           <Cell
@@ -83,6 +85,7 @@ const Board: React.FC<BoardProps> = ({
           <>
             <Button onClick={onPlayAgain}>Play Again</Button>
             <Button onClick={onSeeRecord}>See Record</Button>
+            <Button onClick={onResetGame}>Reset Game</Button>
           </>
         )}
       </Actions>

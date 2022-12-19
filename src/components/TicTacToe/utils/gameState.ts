@@ -34,11 +34,15 @@ export const useGameState = ({
     useState<boolean>(false);
   const [lastWinner, setLastWinner] = useState<string | null>(null);
 
-  useEffect(() => {
+  const initBoard = (boardSize: number) => {
     setBoardState(currentBoardState => ({
       ...currentBoardState,
       cells: Array(boardSize * boardSize).fill(''),
     }));
+  };
+
+  useEffect(() => {
+    initBoard(boardSize);
   }, [boardSize]);
 
   /**
@@ -181,6 +185,20 @@ export const useGameState = ({
     setBoardState(state => ({ ...state, gameMode: gameModes.RECORD_VIEW }));
 
   /**
+   * Reset the game state
+   */
+  const onResetGame = () => {
+    setIsWaitingForOpponent(false);
+    setPlayers({
+      first: '',
+      second: '',
+    });
+    setWinnings({});
+    setBoardState(initialBoardState);
+    initBoard(boardSize);
+  };
+
+  /**
    * Update winnings anytime a game is finished
    */
   const previousGameMode = usePrevious(boardState.gameMode);
@@ -219,5 +237,6 @@ export const useGameState = ({
     onPlayAgain,
     lastWinner,
     seeRecord,
+    onResetGame,
   };
 };

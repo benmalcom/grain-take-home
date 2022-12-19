@@ -33,6 +33,8 @@ const WaitingText = styled(Text)`
 `;
 const WelcomeText = styled(Text)`
   font-weight: 400;
+  font-size: 18px;
+  text-transform: uppercase;
 `;
 
 const OptionList = styled.div`
