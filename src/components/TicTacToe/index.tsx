@@ -4,8 +4,8 @@ import Record from 'components/TicTacToe/Record';
 import Board from './Board';
 import HomeScreen from './HomeScreen';
 import { getGameData } from './utils/dataStorage';
-import { useGameState } from './utils/gameState';
 import { gameModes } from './utils/gameUtils';
+import { useGameState } from './utils/useGameState';
 
 const INITIAL_BOARD_STATE = {
   gameMode: gameModes.NOT_STARTED,
