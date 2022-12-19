@@ -12,7 +12,7 @@ type BoardProps = {
   onPlayAgain(): void;
   onSeeRecord(): void;
   showActionButtons: boolean;
-  gameStatusText: string;
+  gameStatusText: string | JSX.Element;
   boardSize: number;
 };
 
@@ -23,7 +23,7 @@ const BoardWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  width: 100%;
+  width: fit-content;
   height: 100%;
   padding: 20px 10px;
 `;
@@ -31,6 +31,7 @@ const BoardInner = styled.div<{ boardSize: number }>`
   display: grid;
   grid-template-columns: repeat(${({ boardSize }) => boardSize}, 80px);
   margin: 30px auto;
+  grid-gap: 1px;
 `;
 
 const Actions = styled.div`

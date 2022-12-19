@@ -36,7 +36,7 @@ type RecordProps = {
   onPlayAgain(): void;
   players: PlayersType;
   winnings: WinningsType;
-  gameStatusText: string;
+  gameStatusText: string | JSX.Element;
 };
 
 const Record: React.FC<RecordProps> = ({

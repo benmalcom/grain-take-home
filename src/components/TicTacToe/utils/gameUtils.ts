@@ -1,6 +1,7 @@
+import { getWinningCombinations } from './winningCombinations';
 import { PlayerIdsType, PlayersType, WinnerType } from '../types';
 
-export const WINNING_COMBINATIONS = [
+/*export const WINNING_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
@@ -9,7 +10,14 @@ export const WINNING_COMBINATIONS = [
   [2, 4, 6],
   [1, 4, 7],
   [0, 4, 8],
-];
+];*/
+
+export const boardSizes: { [key: number]: string } = {
+  3: '3x3',
+  4: '4x4',
+  5: '5x5',
+  6: '6x6',
+};
 
 export const gameModes: { [key: string]: string } = {
   NOT_STARTED: 'not_started',
@@ -25,8 +33,11 @@ export const playerIds: PlayerIdsType = {
 
 export const getWinnerFromBoardState = (
   cells: string[],
-  player: string
+  player: string,
+  boardSize: number
 ): WinnerType | undefined => {
+  const WINNING_COMBINATIONS = getWinningCombinations(boardSize);
+
   let winner;
   for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
     const combination = WINNING_COMBINATIONS[i];
@@ -45,11 +56,15 @@ export const getWinnerFromBoardState = (
  *
  * @param {Array<String>} boardCells - current state of the cells
  * @param {Object} players - current state of the cells
+ * @param {Number} boardSize
  */
 export const getAICellIndex = (
   boardCells: string[],
-  players: PlayersType
+  players: PlayersType,
+  boardSize: number
 ): number => {
+  const WINNING_COMBINATIONS = getWinningCombinations(boardSize);
+
   const { first: humanPlayerId, second: aiPlayerId } = players;
   let index;
 
@@ -59,8 +74,10 @@ export const getAICellIndex = (
 
     if (hasVacantIndexes(boardCells, combination)) {
       if (
-        getPlayerCellCounts(boardCells, combination, aiPlayerId!) === 2 ||
-        getPlayerCellCounts(boardCells, combination, humanPlayerId!) === 2
+        getPlayerCellCounts(boardCells, combination, aiPlayerId!) ===
+          boardSize - 1 ||
+        getPlayerCellCounts(boardCells, combination, humanPlayerId!) ===
+          boardSize - 1
       ) {
         const indexes = getVacantIndexes(boardCells, combination);
         index = indexes[0];
@@ -73,7 +90,10 @@ export const getAICellIndex = (
   for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
     const combination = WINNING_COMBINATIONS[i];
     if (hasVacantIndexes(boardCells, combination)) {
-      if (getPlayerCellCounts(boardCells, combination, aiPlayerId!) === 1) {
+      if (
+        getPlayerCellCounts(boardCells, combination, aiPlayerId!) ===
+        boardSize - 2
+      ) {
         const indexes = getVacantIndexes(boardCells, combination);
         if (indexes.length > 1) index = indexes[0];
         break;

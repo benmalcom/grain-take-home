@@ -20,7 +20,7 @@ const CellWrapper = styled.div<{
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 5px solid #7e7e7e;
+  border: 2px solid #7e7e7e;
   font-weight: 400;
   border-bottom: none;
   font-family: 'Baskerville', sans-serif;

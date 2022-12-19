@@ -8,12 +8,21 @@ import {
 } from './gameUtils';
 import { BoardStateType, GameState, PlayersType, WinningsType } from '../types';
 
+type UseGameStateProps = {
+  initialBoardState: BoardStateType;
+  boardSize: number;
+};
+
 /**
  * React hook to manage all the state changes in the game
  *
- * @param {BoardStateType} initialBoardState - the initial state of the board
+ * @param {UseGameStateProps} initialBoardState - the initial state of the board
+ * @param {Number} boardSize
  */
-export const useGameState = (initialBoardState: BoardStateType): GameState => {
+export const useGameState = ({
+  initialBoardState,
+  boardSize,
+}: UseGameStateProps): GameState => {
   const [boardState, setBoardState] =
     useState<BoardStateType>(initialBoardState);
   const [winnings, setWinnings] = useState<WinningsType>({});
@@ -24,6 +33,13 @@ export const useGameState = (initialBoardState: BoardStateType): GameState => {
   const [isWaitingForOpponent, setIsWaitingForOpponent] =
     useState<boolean>(false);
   const [lastWinner, setLastWinner] = useState<string | null>(null);
+
+  useEffect(() => {
+    setBoardState(currentBoardState => ({
+      ...currentBoardState,
+      cells: Array(boardSize * boardSize).fill(''),
+    }));
+  }, [boardSize]);
 
   /**
    * @callbackThis function selects a player id for the first Player
@@ -93,7 +109,11 @@ export const useGameState = (initialBoardState: BoardStateType): GameState => {
         const cells = [...state.cells];
         cells[cellIndex] = state.currentPlayer!;
         const configUpdate = { cells } as BoardStateType;
-        const winner = getWinnerFromBoardState(cells, state.currentPlayer!);
+        const winner = getWinnerFromBoardState(
+          cells,
+          state.currentPlayer!,
+          boardSize
+        );
         if (winner) {
           configUpdate.winner = winner;
           configUpdate.gameMode = gameModes.FINISHED;
@@ -127,7 +147,7 @@ export const useGameState = (initialBoardState: BoardStateType): GameState => {
       previousPlayer !== boardState.currentPlayer &&
       boardState.currentPlayer === players.second
     ) {
-      const bestIndex = getAICellIndex(boardState.cells, players);
+      const bestIndex = getAICellIndex(boardState.cells, players, boardSize);
       // Simulate a 500ms second thinking time
       setTimeout(() => onCellClick(bestIndex), 500);
     }
@@ -148,6 +168,7 @@ export const useGameState = (initialBoardState: BoardStateType): GameState => {
     }
     setBoardState({
       ...initialBoardState,
+      cells: Array(boardSize * boardSize).fill(''),
       gameMode: gameModes.IN_PROGRESS,
       currentPlayer: players.first,
     });

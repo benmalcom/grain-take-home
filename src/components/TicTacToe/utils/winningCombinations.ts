@@ -34,7 +34,7 @@ const getArrayDiagonals = (arr: number[][]) => {
   return [primaryDiagonal, secondaryDiagonal];
 };
 
-export const getWinningCombinations = (size: number) => {
+export const getWinningCombinations = (size: number): number[][] => {
   const result = [];
   const winningRows = getRowsFromArray(size);
   const winningColumns = getColumnsFromRowsArray(winningRows);
